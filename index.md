@@ -5,13 +5,6 @@ layout: home
 hero:
   name: "Testing Vue"
   tagline: Learn the smart way to test real-world Vue apps
-  actions:
-    - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
-    - theme: alt
-      text: API Examples
-      link: /api-examples
 
 features:
   - title: Real-world testing scenarios
