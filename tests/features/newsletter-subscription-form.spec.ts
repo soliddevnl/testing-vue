@@ -1,10 +1,10 @@
 import { describe, it } from "vitest";
 import { render, screen } from "@testing-library/vue";
-import Footer from "../../components/Footer.vue";
+import TheFooter from "../../components/TheFooter.vue";
 
 describe("Newsletter subscribe feature", () => {
   it("should show the newsletter subscribe form in the footer", async () => {
-    render(Footer);
+    render(TheFooter);
 
     await screen.getByText(/Stay up to date/);
   });

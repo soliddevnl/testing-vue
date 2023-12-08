@@ -23,10 +23,3 @@ The simplest thing we can test for this feature, is that a newsletter subscribe 
 exists somewhere on the page.
 
 So let's write a test for that.
-
-<<< @/tests/features/newsletter-subscribe.spec.ts
-
-<<< @/components/Footer.vue#template{1}
-
-
-<iframe src="https://gist.github.com/yike5460/8fe665f22d37a45fcd004e774b918087" width="100%" height="300" style="border:none;"></iframe>

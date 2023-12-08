@@ -9,24 +9,24 @@ export default defineConfig({
     nav: nav(),
 
     sidebar: {
-      '/guide/': sidebarGuide()
+      '/scenarios/': sidebarScenarios()
     },
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/soliddevnl/testing-vue' }
     ],
-  }
+  },
 })
 
-function sidebarGuide(): DefaultTheme.SidebarItem[] {
+function sidebarScenarios(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: 'The principles',
+      text: 'Scenarios',
       collapsed: false,
       items: [
         {
-          text: 'Behaviour',
-          link: 'behaviour',
+          text: 'Building a newsletter subscription form',
+          link: '/scenarios/feature-newsletter-subscription-form',
         }
       ]
     }
@@ -37,13 +37,9 @@ function nav(): DefaultTheme.NavItem[] {
   return [
     { text: 'Home', link: '/' },
     {
-      text: 'Guide',
-      link: '/guide/the-principles',
-      activeMatch: '^/guide/'
+      text: 'Scenarios',
+      link: 'scenarios/feature-newsletter-subscription-form',
+      activeMatch: '^/scenarios/'
     }
   ]
-}
-
-function currentYear(): number {
-  return new Date().getFullYear()
 }
