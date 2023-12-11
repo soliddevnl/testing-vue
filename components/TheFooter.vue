@@ -5,13 +5,14 @@
         <div>
           <label for="first-name">First Name</label>
           <input type="text" id="first-name" v-model="firstName" />
-          <div v-if="firstName.length === 0">First name is required</div>
+          <div v-if="errors.has('firstName')">
+            {{ errors.get("firstName") }}
+          </div>
         </div>
         <div>
           <label for="email">Email</label>
           <input type="text" id="email" v-model="email" />
-          <div v-if="email.length === 0">Email is required</div>
-          <div v-else-if="!email.includes('@')">Email is invalid</div>
+          <div v-if="errors.has('email')">{{ errors.get("email") }}</div>
         </div>
         <button type="submit" @click.prevent="submitForm">Subscribe</button>
       </form>
@@ -28,13 +29,30 @@ import { ref } from "vue";
 const firstName = ref("");
 const email = ref("");
 const subscribeSucceeded = ref(false);
+const errors = ref(new Map());
+
+async function validateForm() {
+  const newErrors = new Map();
+
+  if (firstName.value.length === 0) {
+    newErrors.set("firstName", "First name is required");
+  }
+
+  if (email.value.length === 0) {
+    newErrors.set("email", "Email is required");
+  }
+
+  if (email.value.length > 0 && !email.value.includes("@")) {
+    newErrors.set("email", "Email is invalid");
+  }
+
+  errors.value = newErrors;
+}
 
 async function submitForm() {
-  if (
-    firstName.value.length === 0 ||
-    email.value.length === 0 ||
-    !email.value.includes("@")
-  ) {
+  await validateForm();
+
+  if (errors.value.size > 0) {
     return;
   }
 

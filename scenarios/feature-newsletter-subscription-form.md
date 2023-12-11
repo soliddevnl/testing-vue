@@ -303,3 +303,105 @@ We have a lot of logic in our component.
 There is also duplication of the validation knowledge.
 We are now in a good position to refactor, because we have a test suite that will help us to make sure we don't break
 the existing functionality. Lets refactor and remove the duplication.
+
+```vue [Footer.vue]
+
+Certainly, here are the code changes in the previous format using `// [!code --]` for removals and `// [!code ++]` for additions:
+
+```vue
+<template>
+  <div>
+    {{ message }}
+  </div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      message: 'Removed' // [!code --]
+      message: 'Added' // [!code ++]
+    }
+  }
+}
+</script>
+```
+
+And here's the code changes for your provided code snippet using the same format:
+
+```vue [Footer.vue]
+<template>
+  <footer class="footer">
+    <div class="container">
+      <form class="newsletter-subscription" v-if="!subscribeSucceeded">
+        <div>
+          <label for="first-name">First Name</label>
+          <input type="text" id="first-name" v-model="firstName" />
+          <div v-if="firstName.length === 0">First name is required</div> // [!code --]
+          <div v-if="errors.has('firstName')"> // [!code ++]
+            {{ errors.get("firstName") }} // [!code ++]
+          </div> // [!code ++]
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input type="text" id="email" v-model="email" />
+          <div v-if="email.length === 0">Email is required</div> // [!code --]
+          <div v-else-if="!email.includes('@')">Email is invalid</div> // [!code --]
+          <div v-if="errors.has('email')">{{ errors.get("email") }}</div> // [!code ++]
+        </div>
+        <button type="submit" @click.prevent="submitForm">Subscribe</button>
+      </form>
+      <div v-else>
+        <div class="message">Thank you for subscribing!</div>
+      </div>
+    </div>
+  </footer>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+
+const firstName = ref("");
+const email = ref("");
+const subscribeSucceeded = ref(false);
+const errors = ref(new Map()); // [!code ++]
+
+async function validateForm() { // [!code ++]
+  const newErrors = new Map(); // [!code ++]
+
+  if (firstName.value.length === 0) { // [!code ++]
+    newErrors.set("firstName", "First name is required"); // [!code ++]
+  } // [!code ++]
+
+  if (email.value.length === 0) { // [!code --]
+    newErrors.set("email", "Email is required"); // [!code ++]
+  } // [!code ++]
+
+  if (email.value.length > 0 && !email.value.includes("@")) { // [!code --]
+    newErrors.set("email", "Email is invalid"); // [!code ++]
+  } // [!code ++]
+
+  errors.value = newErrors; // [!code ++]
+}
+
+async function submitForm() { // [!code ++]
+  await validateForm(); // [!code ++]
+
+  if (errors.value.size > 0) { // [!code ++]
+    return; // [!code ++]
+  } // [!code ++]
+
+  const url = new URL("/api/newsletter", window.location.origin);
+  const response = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify({
+      firstName: firstName.value,
+      email: email.value,
+    }),
+  });
+
+  subscribeSucceeded.value = response.ok;
+}
+</script>
+```
+
