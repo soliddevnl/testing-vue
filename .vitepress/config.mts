@@ -25,7 +25,7 @@ function sidebarScenarios(): DefaultTheme.SidebarItem[] {
       collapsed: false,
       items: [
         {
-          text: 'Building a newsletter subscription form',
+          text: 'Newsletter subscription form',
           link: '/scenarios/feature-newsletter-subscription-form',
         }
       ]
