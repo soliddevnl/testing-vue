@@ -1,6 +1,9 @@
 <template>
   <footer class="footer">
     <div class="container">
+      <div class="message">
+        {{ formMessage }}
+      </div>
       <form class="newsletter-subscription" v-if="!subscribeSucceeded">
         <div>
           <label for="first-name">First Name</label>
@@ -16,9 +19,6 @@
         </div>
         <button type="submit" @click.prevent="submitForm">Subscribe</button>
       </form>
-      <div v-else>
-        <div class="message">Thank you for subscribing!</div>
-      </div>
     </div>
   </footer>
 </template>
@@ -30,6 +30,7 @@ const firstName = ref("");
 const email = ref("");
 const subscribeSucceeded = ref(false);
 const errors = ref(new Map());
+const formMessage = ref("");
 
 async function validateForm() {
   const newErrors = new Map();
@@ -66,6 +67,9 @@ async function submitForm() {
   });
 
   subscribeSucceeded.value = response.ok;
+  formMessage.value = response.ok
+    ? "Thank you for subscribing!"
+    : "Something went wrong. Please try again.";
 }
 </script>
 

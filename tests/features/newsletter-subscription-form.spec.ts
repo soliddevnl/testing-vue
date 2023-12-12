@@ -72,4 +72,57 @@ describe("Newsletter subscribe feature", () => {
 
     await screen.getByText(/Thank you for subscribing/i);
   });
+
+  it("should shown an error message when the form submission fails", async () => {
+    const user = userEvent.setup();
+
+    server.use(
+      http.post("/api/newsletter", () => {
+        return HttpResponse.json(
+          { error: "Something went wrong" },
+          { status: 500 },
+        );
+      }),
+    );
+
+    render(TheFooter);
+
+    await user.type(screen.getByLabelText(/first name/i), "John");
+    await user.type(screen.getByLabelText(/email/i), "john@doe.com");
+    await user.click(screen.getByRole("button", { name: /subscribe/i }));
+
+    await screen.getByText(/Something went wrong/i);
+  });
+
+  it("should be possible to submit again, after a failed submission", async () => {
+    const user = userEvent.setup();
+
+    server.use(
+      http.post("/api/newsletter", async ({ request }) => {
+        const body = await request.json();
+        if (body.firstName === "Jane") {
+          return HttpResponse.json();
+        }
+
+        return HttpResponse.json(
+          { error: "Something went wrong" },
+          { status: 500 },
+        );
+      }),
+    );
+
+    render(TheFooter);
+
+    await user.type(screen.getByLabelText(/first name/i), "John");
+    await user.type(screen.getByLabelText(/email/i), "john@doe.com");
+    await user.click(screen.getByRole("button", { name: /subscribe/i }));
+
+    await screen.getByText(/Something went wrong/i);
+
+    await user.clear(screen.getByLabelText(/first name/i));
+    await user.type(screen.getByLabelText(/first name/i), "Jane");
+    await user.click(screen.getByRole("button", { name: /subscribe/i }));
+
+    await screen.getByText(/Thank you for subscribing/i);
+  });
 });

@@ -17,9 +17,8 @@ For the newsletter subscription form, I came up with the following acceptance cr
   Subscribe" button.
 - The form should validate that the first name and email are required and that the email has the right format. The user
   should see clear error messages.
-- The form should submit the data to our API, displaying success or error messages.
-- The user should see a confirmation message on successful submission
-- The user should see an error message on unsuccessful submission and be able to retry.
+- The form should submit the data to our API and display a success message.
+- The form should display an error message when the API returns an error. The user should be able to retry.
 - The form should not allow multiple submissions in a row.
 
 ## Implementing the first acceptance criteria
@@ -404,4 +403,121 @@ async function submitForm() { // [!code ++]
 }
 </script>
 ```
+
+## Implementing the fourth acceptance criteria
+
+"The form should display an error message when the API returns an error. The user should be able to retry."
+
+```code-group
+```typescript [newsletter-subscription.spec.ts]
+it("should be possible to submit again, after a failed submission", async () => {
+    const user = userEvent.setup();
+
+    server.use(
+      http.post("/api/newsletter", async ({ request }) => {
+        const body = await request.json();
+        if (body.firstName === "Jane") {
+          return HttpResponse.json();
+        }
+
+        return HttpResponse.json(
+          { error: "Something went wrong" },
+          { status: 500 },
+        );
+      }),
+    );
+
+    render(TheFooter);
+
+    await user.type(screen.getByLabelText(/first name/i), "John");
+    await user.type(screen.getByLabelText(/email/i), "john@doe.com");
+    await user.click(screen.getByRole("button", { name: /subscribe/i }));
+
+    await screen.getByText(/Something went wrong/i);
+
+    await user.clear(screen.getByLabelText(/first name/i));
+    await user.type(screen.getByLabelText(/first name/i), "Jane");
+    await user.click(screen.getByRole("button", { name: /subscribe/i }));
+
+    await screen.getByText(/Thank you for subscribing/i);
+  });
+```
+
+```vue [Footer.vue]
+<template>
+  <footer class="footer">
+    <div class="container">
+      <div class="message">
+        {{ formMessage }}
+      </div>
+      <form class="newsletter-subscription" v-if="!subscribeSucceeded">
+        <div>
+          <label for="first-name">First Name</label>
+          <input type="text" id="first-name" v-model="firstName" />
+          <div v-if="errors.has('firstName')">
+            {{ errors.get("firstName") }}
+          </div>
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input type="text" id="email" v-model="email" />
+          <div v-if="errors.has('email')">{{ errors.get("email") }}</div>
+        </div>
+        <button type="submit" @click.prevent="submitForm">Subscribe</button>
+      </form>
+    </div>
+  </footer>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+
+const firstName = ref("");
+const email = ref("");
+const subscribeSucceeded = ref(false);
+const errors = ref(new Map());
+const formMessage = ref("");
+
+async function validateForm() {
+  const newErrors = new Map();
+
+  if (firstName.value.length === 0) {
+    newErrors.set("firstName", "First name is required");
+  }
+
+  if (email.value.length === 0) {
+    newErrors.set("email", "Email is required");
+  }
+
+  if (email.value.length > 0 && !email.value.includes("@")) {
+    newErrors.set("email", "Email is invalid");
+  }
+
+  errors.value = newErrors;
+}
+
+async function submitForm() {
+  await validateForm();
+
+  if (errors.value.size > 0) {
+    return;
+  }
+
+  const url = new URL("/api/newsletter", window.location.origin);
+  const response = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify({
+      firstName: firstName.value,
+      email: email.value,
+    }),
+  });
+
+  subscribeSucceeded.value = response.ok;
+  formMessage.value = response.ok
+    ? "Thank you for subscribing!"
+    : "Something went wrong. Please try again.";
+}
+</script>
+```
+
 
