@@ -1,76 +1,13 @@
 <template>
   <footer class="footer">
     <div class="container">
-      <div class="message">
-        {{ formMessage }}
-      </div>
-      <form class="newsletter-subscription" v-if="!subscribeSucceeded">
-        <div>
-          <label for="first-name">First Name</label>
-          <input type="text" id="first-name" v-model="firstName" />
-          <div v-if="errors.has('firstName')">
-            {{ errors.get("firstName") }}
-          </div>
-        </div>
-        <div>
-          <label for="email">Email</label>
-          <input type="text" id="email" v-model="email" />
-          <div v-if="errors.has('email')">{{ errors.get("email") }}</div>
-        </div>
-        <button type="submit" @click.prevent="submitForm">Subscribe</button>
-      </form>
+      <NewsletterSubscribeForm />
     </div>
   </footer>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-
-const firstName = ref("");
-const email = ref("");
-const subscribeSucceeded = ref(false);
-const errors = ref(new Map());
-const formMessage = ref("");
-
-async function validateForm() {
-  const newErrors = new Map();
-
-  if (firstName.value.length === 0) {
-    newErrors.set("firstName", "First name is required");
-  }
-
-  if (email.value.length === 0) {
-    newErrors.set("email", "Email is required");
-  }
-
-  if (email.value.length > 0 && !email.value.includes("@")) {
-    newErrors.set("email", "Email is invalid");
-  }
-
-  errors.value = newErrors;
-}
-
-async function submitForm() {
-  await validateForm();
-
-  if (errors.value.size > 0) {
-    return;
-  }
-
-  const url = new URL("/api/newsletter", window.location.origin);
-  const response = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify({
-      firstName: firstName.value,
-      email: email.value,
-    }),
-  });
-
-  subscribeSucceeded.value = response.ok;
-  formMessage.value = response.ok
-    ? "Thank you for subscribing!"
-    : "Something went wrong. Please try again.";
-}
+import NewsletterSubscribeForm from "./newsletter/NewsletterSubscribeForm.vue";
 </script>
 
 <style scoped>
