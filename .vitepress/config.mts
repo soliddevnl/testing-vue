@@ -9,7 +9,8 @@ export default defineConfig({
     nav: nav(),
 
     sidebar: {
-      '/scenarios/': sidebarScenarios()
+      '/scenarios/': sidebar(),
+      '/tactics/': sidebar(),
     },
 
     socialLinks: [
@@ -18,7 +19,7 @@ export default defineConfig({
   },
 })
 
-function sidebarScenarios(): DefaultTheme.SidebarItem[] {
+function sidebar(): DefaultTheme.SidebarItem[] {
   return [
     {
       text: 'Scenarios',
@@ -27,6 +28,16 @@ function sidebarScenarios(): DefaultTheme.SidebarItem[] {
         {
           text: 'Newsletter subscription form',
           link: '/scenarios/feature-newsletter-subscription-form',
+        }
+      ]
+    },
+    {
+      text: 'Tactics',
+      collapsed: false,
+      items: [
+        {
+          text: 'Forms',
+          link: '/tactics/testing-double-submit-prevention',
         }
       ]
     }
@@ -40,6 +51,11 @@ function nav(): DefaultTheme.NavItem[] {
       text: 'Scenarios',
       link: 'scenarios/feature-newsletter-subscription-form',
       activeMatch: '^/scenarios/'
+    },
+    {
+      text: 'Tactics',
+      link: 'tactics/testing-double-submit-prevention',
+      activeMatch: '^/tactics/'
     }
   ]
 }
