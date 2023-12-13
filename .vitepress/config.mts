@@ -68,7 +68,7 @@ function head(): HeadConfig {
   if (process.env.NODE_ENV === 'production') {
     head.push([
         'script',
-        {async: '', src: 'https://www.googletagmanager.com/gtag/js?id=818MVBDRWL'}
+        {async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-818MVBDRWL'}
       ]
     )
     head.push([
@@ -77,7 +77,7 @@ function head(): HeadConfig {
       `window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', '818MVBDRWL');`
+      gtag('config', 'G-818MVBDRWL');`
     ])
   }
 
