@@ -9,6 +9,11 @@ Using real-world scenarios, I will show you how to use TDD to build out features
 
 The first feature we will build is the newsletter subscription form for this website.
 
+::: warning
+This article is a work in progress. I will add more content in the coming weeks.
+It has not been proofread yet and it might contain errors.
+:::
+
 ## Acceptance criteria
 
 For the newsletter subscription form, I came up with the following acceptance criteria:
@@ -668,7 +673,8 @@ it("should prevent double form submissions", async () => {
   ...
   <button type="submit" :disabled="submitting" @click.prevent="submitForm"> // [!code ++]
     Subscribe // [!code ++]
-  </button> // [!code ++]
+  </button>
+  // [!code ++]
   ...
 </template>
 
@@ -681,7 +687,7 @@ it("should prevent double form submissions", async () => {
     if (errors.value.size > 0) {
       return;
     }
-    ...
+  ...
     submitting.value = true; // [!code ++]
 
     const url = new URL("/api/newsletter", window.location.origin);
@@ -692,9 +698,9 @@ it("should prevent double form submissions", async () => {
         email: email.value,
       }),
     });
-    
+
     submitting.value = false; // [!code ++]
-    ...
+  ...
   }
 </script>
 ```
