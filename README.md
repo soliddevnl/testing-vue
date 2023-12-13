@@ -2,5 +2,5 @@
 
 # testing-vue.com
 
-This is the source code of testing-vue.com. It is a static website build with [VuePress](https://vuepress.vuejs.org/).
+This is the source code of testing-vue.com. It is a static website build with [VitePress](https://vitepress.dev/).
 It is the ultimate guide to testing Vue applications.
