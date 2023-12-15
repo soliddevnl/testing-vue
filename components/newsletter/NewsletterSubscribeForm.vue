@@ -1,20 +1,24 @@
 <template>
-  <div>
+  <div class="newsletter-subscription">
+    <h3>Stay up to date</h3>
+    <p>Subscribe to the newsletter to stay up to date with articles.</p>
     <div class="message">
       {{ formMessage }}
     </div>
-    <form class="newsletter-subscription" v-if="!subscribeSucceeded">
-      <div>
+    <form v-if="!subscribeSucceeded">
+      <div class="form-group">
         <label for="first-name">First Name</label>
         <input type="text" id="first-name" v-model="firstName" />
-        <div v-if="errors.has('firstName')">
+        <div class="error">
           {{ errors.get("firstName") }}
         </div>
       </div>
-      <div>
+      <div class="form-group">
         <label for="email">Email</label>
         <input type="text" id="email" v-model="email" />
-        <div v-if="errors.has('email')">{{ errors.get("email") }}</div>
+        <div class="error">
+          {{ errors.get("email") }}
+        </div>
       </div>
       <button type="submit" :disabled="submitting" @click.prevent="submitForm">
         Subscribe
@@ -82,6 +86,84 @@ async function submitForm() {
 </script>
 
 <style scoped>
+.newsletter-subscription {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+
+  form {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    @media (min-width: 768px) {
+      width: 450px;
+    }
+  }
+
+  h3 {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--vp-c-text-1);
+  }
+
+  p {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--vp-c-text-2);
+  }
+
+  .form-group {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--vp-c-text-2);
+      text-align: left;
+    }
+
+    input {
+      margin-top: 2px;
+      width: 100%;
+      height: 40px;
+      border: 1px solid var(--vp-c-border);
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--vp-c-text-1);
+    }
+
+    .error {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--vp-c-red-1);
+      text-align: left;
+    }
+  }
+
+  button {
+    margin-top: 16px;
+    width: 100%;
+    height: 40px;
+    border: 1px solid var(--vp-c-border);
+    border-radius: 4px;
+    background-color: var(--vp-button-brand-active-text);
+    color: var(--vp-c-text-1);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+}
+
 .message {
   line-height: 24px;
   font-size: 14px;
