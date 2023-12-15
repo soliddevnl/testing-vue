@@ -2,10 +2,13 @@
   <div class="newsletter-subscription">
     <h3>Stay up to date</h3>
     <p>Subscribe to the newsletter to stay up to date with articles.</p>
-    <div class="message">
-      {{ formMessage }}
+    <div v-if="subscribeSucceeded" class="message">
+      <p>Thank you for subscribing!</p>
     </div>
-    <form v-if="!subscribeSucceeded">
+    <form v-else>
+      <div v-if="globalError" class="error">
+        {{ globalError }}
+      </div>
       <div class="form-group">
         <label for="first-name">First Name</label>
         <input type="text" id="first-name" v-model="firstName" />
@@ -35,10 +38,10 @@ const email = ref("");
 const submitting = ref(false);
 const subscribeSucceeded = ref(false);
 const errors = ref(new Map());
-const formMessage = ref("");
+const globalError = ref("");
 
 watch([firstName, email], () => {
-  formMessage.value = "";
+  globalError.value = "";
 });
 
 async function validateForm() {
@@ -66,6 +69,7 @@ async function submitForm() {
     return;
   }
 
+  globalError.value = "";
   submitting.value = true;
 
   const url = new URL("/api/newsletter", window.location.origin);
@@ -78,10 +82,15 @@ async function submitForm() {
   });
 
   submitting.value = false;
-  subscribeSucceeded.value = response.ok;
-  formMessage.value = response.ok
-    ? "Thank you for subscribing!"
-    : "Something went wrong. Please try again.";
+
+  if (!response.ok) {
+    globalError.value = "Something went wrong. Please try again.";
+    subscribeSucceeded.value = false;
+
+    return;
+  }
+
+  subscribeSucceeded.value = true;
 }
 </script>
 
@@ -94,7 +103,6 @@ async function submitForm() {
   padding: 24px;
 
   form {
-    margin-top: 24px;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -115,6 +123,13 @@ async function submitForm() {
     font-size: 14px;
     font-weight: 500;
     color: var(--vp-c-text-2);
+  }
+
+  .error {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--vp-c-red-1);
+    text-align: left;
   }
 
   .form-group {
@@ -140,13 +155,6 @@ async function submitForm() {
       font-size: 14px;
       font-weight: 500;
       color: var(--vp-c-text-1);
-    }
-
-    .error {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--vp-c-red-1);
-      text-align: left;
     }
   }
 

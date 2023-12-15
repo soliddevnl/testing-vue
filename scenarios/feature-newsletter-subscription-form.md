@@ -707,4 +707,76 @@ it("should prevent double form submissions", async () => {
 
 :::
 
+## After manual testing
+
+After manual testing, I noticed that my solution for showing a global form message, is not that great.
+I am mixing two concerns here, a global form error and a success message. I want to separate those two concerns
+because I have different requirements for them.
+
+The form error should be red and should be cleared when the user retries.
+The success message should be green and should replace the form to give the user a clear indication that the form was
+submitted successfully.
+
+Let's go ahead and fix this.
+
+```vue
+
+<div class="newsletter-subscription">
+  <h3>Stay up to date</h3>
+  <p>Subscribe to the newsletter to stay up to date with articles.</p>
+  <div class="message"> // [!code --]
+    {{ formMessage }} // [!code --]
+    <div v-if="subscribeSucceeded" class="message"> // [!code ++]
+      <p>Thank you for subscribing!</p> // [!code ++]
+    </div>
+    <form v-if="!subscribeSucceeded"> // [!code --]
+      <form v-else> // [!code ++]
+        <div v-if="globalError" class="error"> // [!code ++]
+          {{ globalError }} // [!code ++]
+        </div>
+        // [!code ++]
+        <div class="form-group">
+          <label for="first-name">First Name</label>
+          <input type="text" id="first-name" v-model="firstName"/>
+```
+
+```vue        
+
+<script setup lang="ts">
+  ...
+  const submitting = ref(false);
+  const subscribeSucceeded = ref(false);
+  const errors = ref(new Map());
+  const formMessage = ref(""); // [!code --]
+  const globalError = ref(""); // [!code ++]
+
+  watch([firstName, email], () => {
+    formMessage.value = ""; // [!code --]
+    globalError.value = ""; // [!code ++]
+  });
+
+  async function submitForm() {
+    // ...
+    globalError.value = ""; // [!code ++]
+    submitting.value = true;
+    // ...
+    submitting.value = false;
+    subscribeSucceeded.value = response.ok; // [!code --]
+    formMessage.value = response.ok // [!code --]
+        ? "Thank you for subscribing!" // [!code --]
+        : "Something went wrong. Please try again."; // [!code --]
+    // [!code ++]
+    if (!response.ok) { // [!code ++]
+      globalError.value = "Something went wrong. Please try again."; // [!code ++]
+      subscribeSucceeded.value = false; // [!code ++]
+      return; // [!code ++]
+    } // [!code ++]
+    // [!code ++]
+    subscribeSucceeded.value = true; // [!code ++]
+  }
+</script>
+```
+
+I like this better. There is a much clearer separation of concerns now.
+Each concern has its own state and can be changed independently.
 
