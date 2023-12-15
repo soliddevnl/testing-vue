@@ -38,7 +38,7 @@ function sidebar(): DefaultTheme.SidebarItem[] {
       collapsed: false,
       items: [
         {
-          text: 'Forms',
+          text: 'Prevent double submit',
           link: '/tactics/testing-double-submit-prevention',
         }
       ]
