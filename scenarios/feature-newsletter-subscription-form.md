@@ -765,13 +765,12 @@ Let's go ahead and fix this.
     formMessage.value = response.ok // [!code --]
         ? "Thank you for subscribing!" // [!code --]
         : "Something went wrong. Please try again."; // [!code --]
-    // [!code ++]
+
     if (!response.ok) { // [!code ++]
       globalError.value = "Something went wrong. Please try again."; // [!code ++]
       subscribeSucceeded.value = false; // [!code ++]
       return; // [!code ++]
     } // [!code ++]
-    // [!code ++]
     subscribeSucceeded.value = true; // [!code ++]
   }
 </script>
