@@ -780,3 +780,7 @@ Let's go ahead and fix this.
 I like this better. There is a much clearer separation of concerns now.
 Each concern has its own state and can be changed independently.
 
+::: info
+Notice how we refactored the internals of the component, without having to change the tests.
+This is the power of TDD. It gives you the confidence to refactor your code.
+:::
