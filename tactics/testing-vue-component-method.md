@@ -138,7 +138,15 @@ That's exactly what this test does.
 ```typescript
 describe("UserList", () => {
   it("should render the fetched users in alphabetical order", async () => {
-    // ...
+    server.use(
+      http.get("https://jsonplaceholder.typicode.com/users", () => {
+        return Response.json([
+          { id: 1, name: "Leanne Graham" },
+          { id: 2, name: "Ervin Howell" },
+          { id: 3, name: "Clementine Bauch" },
+        ]);
+      }),
+    );
 
     render(UserList);
 
@@ -146,8 +154,9 @@ describe("UserList", () => {
       const firstName = await screen.getByText("Clementine Bauch");
       const secondName = await screen.getByText("Ervin Howell");
 
-      // 4 means that the first node is before the second node
-      expect(firstName.compareDocumentPosition(secondName)).toBe(4);
+      expect(firstName.compareDocumentPosition(secondName)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
     });
   });
 });

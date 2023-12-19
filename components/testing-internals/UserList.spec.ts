@@ -24,8 +24,9 @@ describe("UserList", () => {
       const firstName = await screen.getByText("Clementine Bauch");
       const secondName = await screen.getByText("Ervin Howell");
 
-      // 4 means the second element is after the first one
-      expect(firstName.compareDocumentPosition(secondName)).toBe(4);
+      expect(firstName.compareDocumentPosition(secondName)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
     });
   });
 });
