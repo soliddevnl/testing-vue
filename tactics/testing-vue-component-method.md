@@ -76,11 +76,11 @@ Let's say we have a component that fetches a list of users from an API and rende
     
 ```typescript [UserList.vue]
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import { onMounted, ref } from "vue";
 
 const users = ref();
 
-onMounted(async () => {
+async function loadUsers() {
   const response = await fetch("https://jsonplaceholder.typicode.com/users");
 
   if (!response.ok) {
@@ -90,6 +90,10 @@ onMounted(async () => {
   const responseUsers = await response.json();
 
   users.value = responseUsers.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+onMounted(async () => {
+  await loadUsers();
 });
 </script>
 ```
