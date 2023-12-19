@@ -64,6 +64,7 @@ Does it call an API? Then assert that the API is called with the correct paramet
 Let's say we have a component that fetches a list of users from an API and renders them in a list.
 
 ```vue [UserList.vue]
+
 <template>
   <ul>
     <li v-for="user in users" :key="user.id">
@@ -71,23 +72,25 @@ Let's say we have a component that fetches a list of users from an API and rende
     </li>
   </ul>
 </template>
+```
+    
+```typescript [UserList.vue]
+<script setup lang="ts">
+import {onMounted, ref} from "vue";
 
-<script lang="ts">
-import { ref, onMounted } from "vue";
+const users = ref();
 
-export default {
-  setup() {
-    const users = ref([]);
+onMounted(async () => {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
 
-    onMounted(async () => {
-      const response = await fetch("/api/users");
-      users.value = await response.json();
-    });
+  if (!response.ok) {
+    throw new Error("Failed to fetch.");
+  }
 
-    return { users };
-  },
-};
+  const responseUsers = await response.json();
 
+  users.value = responseUsers.sort((a, b) => a.name.localeCompare(b.name));
+});
 </script>
 ```
 
