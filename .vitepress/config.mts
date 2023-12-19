@@ -40,6 +40,10 @@ function sidebar(): DefaultTheme.SidebarItem[] {
         {
           text: 'Prevent double submit',
           link: '/tactics/testing-double-submit-prevention',
+        },
+        {
+          text: 'Test a Vue component method',
+          link: '/tactics/testing-vue-component-method',
         }
       ]
     }
